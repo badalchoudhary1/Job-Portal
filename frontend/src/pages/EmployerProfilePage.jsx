@@ -1,15 +1,13 @@
 
-
-
-import { createSignal, createEffect } from "solid-js";
-import { useParams } from "@solidjs/router"; // Get the dynamic ID from the URL
+import { useParams } from "react-router-dom";
 import { fetchEmployerProfile } from "../api/employerProfile"; // API to fetch profile
+import { useEffect, useState } from "react";
 
 const EmployerProfilePage = () => {
   const { id } = useParams(); // Get the dynamic ID from the URL
-  const [profile, setProfile] = createSignal(null);
-  const [loading, setLoading] = createSignal(true);
-  const [error, setError] = createSignal(null);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch employer profile data when the component mounts
   const getEmployerProfile = async () => {
@@ -25,35 +23,35 @@ const EmployerProfilePage = () => {
   };
 
   // Call the API on component mount
-  createEffect(() => {
+  useEffect(() => {
     if (id) {
       getEmployerProfile();
     }
-  });
+  }, []);
 
   return (
-    <div class="p-6">
-      {loading() && <div class="text-center text-gray-500">Loading...</div>}
-      {error() && <div class="text-red-500 text-center">{error()}</div>}
-      {profile() && (
-        <div class="max-w-3xl mx-auto p-6 border rounded shadow">
-          <h1 class="text-4xl font-bold mb-4">{profile().company_name}</h1>
-          <p class="mb-4">
-            <strong>Company Description:</strong> {profile().description}
+    <div className="p-6">
+      {loading && <div className="text-center text-gray-500">Loading...</div>}
+      {error && <div className="text-red-500 text-center">{error}</div>}
+      {profile && (
+        <div className="max-w-3xl mx-auto p-6 border rounded shadow">
+          <h1 className="text-4xl font-bold mb-4">{profile.company_name}</h1>
+          <p className="mb-4">
+            <strong>Company Description:</strong> {profile.description}
           </p>
-          <p class="mb-4">
+          <p className="mb-4">
             <strong>Website:</strong>{" "}
             <a
-              href={profile().website}
+              href={profile.website}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-blue-500 hover:underline"
+              className="text-blue-500 hover:underline"
             >
-              {profile().website}
+              {profile.website}
             </a>
           </p>
           <p>
-            <strong>Location:</strong> {profile().location}
+            <strong>Location:</strong> {profile.location}
           </p>
         </div>
       )}

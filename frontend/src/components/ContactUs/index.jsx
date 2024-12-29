@@ -1,7 +1,7 @@
-import { createSignal } from "solid-js";
+import { useState } from "react";
 
 function ContactUs() {
-  const [formData, setFormData] = createSignal({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
@@ -15,7 +15,7 @@ function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData());
+    console.log("Form Submitted:", formData);
     alert("Your message has been sent successfully!");
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
@@ -39,7 +39,7 @@ function ContactUs() {
                 <input
                   type="text"
                   name="name"
-                  value={formData().name}
+                  value={formData.name}
                   onInput={handleChange}
                   placeholder="Enter your name"
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -52,7 +52,7 @@ function ContactUs() {
                 <input
                   type="email"
                   name="email"
-                  value={formData().email}
+                  value={formData.email}
                   onInput={handleChange}
                   placeholder="Enter your email"
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -65,7 +65,7 @@ function ContactUs() {
                 <input
                   type="text"
                   name="subject"
-                  value={formData().subject}
+                  value={formData.subject}
                   onInput={handleChange}
                   placeholder="Subject"
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -77,7 +77,7 @@ function ContactUs() {
                 <label className="block text-gray-700 font-medium mb-2">Message</label>
                 <textarea
                   name="message"
-                  value={formData().message}
+                  value={formData.message}
                   onInput={handleChange}
                   placeholder="Write your message here..."
                   rows="5"

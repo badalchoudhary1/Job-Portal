@@ -1,40 +1,40 @@
-import { createSignal, createEffect } from "solid-js";
-import { A } from "@solidjs/router";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const JobSeekerList = () => {
-  const [jobSeekers, setJobSeekers] = createSignal([]);
+  const [jobSeekers, setJobSeekers] = useState([]);
 
-  createEffect(() => {
+  useEffect(() => {
     fetch("http://127.0.0.1:8000/api/job-seekers/")
       .then((response) => response.json())
       .then((data) => setJobSeekers(data));
-  });
+  }, []);
 
   return (
-    <div class="p-6">
-      <h1 class="text-2xl font-bold mb-4">Job Seeker Profiles</h1>
-      <A
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Job Seeker Profiles</h1>
+      <Link
         href="/job-seekers/new"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Add New Job Seeker
-      </A>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {jobSeekers().map((jobSeeker) => (
-          <div class="p-4 border rounded shadow-sm">
+      </Link>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {jobSeekers.map((jobSeeker) => (
+          <div className="p-4 border rounded shadow-sm">
             <img
               src={jobSeeker.profile_picture || "/placeholder.jpg"}
               alt={jobSeeker.name}
-              class="w-20 h-20 rounded-full mb-2"
+              className="w-20 h-20 rounded-full mb-2"
             />
-            <h2 class="font-bold">{jobSeeker.name}</h2>
+            <h2 className="font-bold">{jobSeeker.name}</h2>
             <p>{jobSeeker.location}</p>
-            <A
+            <Link
               href={`/job-seekers/${jobSeeker.id}`}
-              class="text-blue-500 hover:underline"
+              className="text-blue-500 hover:underline"
             >
               View Profile
-            </A>
+            </Link>
           </div>
         ))}
       </div>

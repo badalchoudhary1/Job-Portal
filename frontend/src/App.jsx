@@ -1,4 +1,4 @@
-
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ViewJobPostPage from './pages/ViewJobPostPage';
 import AboutUsPage from './pages/AboutUsPage';
@@ -16,51 +16,72 @@ import EmployerProfilesPage from "./pages/EmployerProfilesPage";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
+import useStore from './store';
 
-import { Router, Route } from "@solidjs/router";
-
-const App = (props) => {
+const App = () => {
+  const {token, user} = useStore()
   return (
-    <Layout>
-      <main class="p-6">
-        {props.children}
+      <main className="p-6">
+      {token ? 
+      <Layout>
+        <Routes>
+          {(user?.role === "employer" || user?.role === "job_seeker") && (
+            <>
+            <Route path="/" element={<ViewJobPostPage />} />
+            <Route path="/" element={<ViewJobPostPage />} />
+            <Route path="/view-job" element={<ViewJobPostPage />} />
+            <Route path="/about-us" element={<AboutUsPage />} />
+            <Route path="/contact-us" element={<ContactUsPage />} />
+            <Route path="/job-seekers" element={<JobSeekerList />} />
+            <Route path="/job-seekers/:id" element={<JobSeekerDetails />} />
+            <Route path="/compare-jobs" element={<CompareJobsPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/success-stories" element={<SuccessStoriesPage />} />
+            <Route path="/job/:id" element={<JobDetailsPage />} />
+            <Route path="/profile" element={<Profile />} />
+            </>
+          )}
+
+          {(user?.role === "employer") && (<>
+                <Route path="/profile/employer" element={<EmployerProfilesPage />} />
+                <Route path="/profile/employer/:id" element={<EmployerProfilePage />} />
+          </>)}
+
+          {(user?.role === "job_seeker") && (<>
+            <Route path="/job-seekers/new" element={<JobSeekerForm />} />
+          </>)}
+
+   
+          {/* <Route path="/profile/employer" element={<EmployerProfilesPage />} />
+          <Route path="/profile/employer/:id" element={<EmployerProfilePage />} /> */}
+          {/* <Route path="/job-seekers" element={<JobSeekerList />} />
+          <Route path="/job-seekers/new" element={<JobSeekerForm />} />
+          <Route path="/job-seekers/:id" element={<JobSeekerDetails />} />
+          <Route path="/compare-jobs" element={<CompareJobsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/success-stories" element={<SuccessStoriesPage />} />
+          <Route path="/job/:id" element={<JobDetailsPage />} />
+          <Route path="/profile" element={<Profile />} /> */}
+
+          <Route path="*" element={<div className='h-[200px] bg-gray-400'>Not Found</div>} />
+
+         </Routes>
+         </Layout>
+             :
+        <>
+          <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="*" element={<Navigate to={"/login"} />} />
+          </Routes>
+
+        </>
+          }
       </main>
-    </Layout>
+   
   );
 };
 
-export const Routes = () => (
- 
-  <Router root={App}>
-    <Route path="/view-job" component={ViewJobPostPage} />
-    <Route path="/about-us" component={AboutUsPage} />
-    <Route path="/contact-us" component={ContactUsPage} />
-    <Route path="/profile/employer" component={EmployerProfilesPage} />
-    <Route path="/profile/employer/:id" component={EmployerProfilePage} />
-    <Route path="/job-seekers" component={JobSeekerList} />
-    <Route path="/job-seekers/new" component={JobSeekerForm} />
-    <Route path="/job-seekers/:id" component={JobSeekerDetails} />
-    <Route
-      path="/compare-jobs"
-      component={() => {
-        console.log("Accessing CompareJobsPage...");
-        return (
-          <ProtectedRoute>
-            <CompareJobsPage />
-          </ProtectedRoute>
-        );
-      }}
-    />
-    <Route path="/faq" component={FAQPage} />
-    <Route path="/blog" component={BlogPage} />
-    <Route path="/success-stories" component={SuccessStoriesPage} />
-    <Route path="/job/:id" component={JobDetailsPage} />
-    <Route path="/" component={Login} />
-    <Route path="/profile" component={Profile} />
-    <Route path="/register" component={Register} />
-  </Router>
-);
-
 export default App;
-

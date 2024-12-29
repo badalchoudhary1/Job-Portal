@@ -1,20 +1,22 @@
 
 
 import axios from 'axios';
+import useStore from '../store';
 
 const API_URL = 'http://localhost:8000/api/api/';  // Make sure this matches your Django API
 
 // Register function
-export const register = async (username, email, password) => {
+export const register = async (username, email, password, user_type) => {
   try {
     const response = await axios.post(`${API_URL}register/`, {
       username,
       email,
       password,
+      user_type,
     });
-    const { token } = response.data;
-    localStorage.setItem('token', token);  // Store token in local storage after registration
+    
     return response;
+
   } catch (error) {
     console.error("Registration error:", error.response?.data || error.message);
     throw error;
@@ -25,8 +27,9 @@ export const register = async (username, email, password) => {
 export const login = async (username, password) => {
   try {
     const response = await axios.post(`${API_URL}login/`, { username, password });
-    const { token } = response.data;
-    localStorage.setItem('token', token);
+    const { token , user} = response.data;
+     useStore.getState().setToken(token);
+     useStore.getState().setUser(user);
     return response;
   } catch (error) {
     console.error("Login error:", error.response?.data || error.message);
@@ -36,7 +39,7 @@ export const login = async (username, password) => {
 
 // Get Profile function (unchanged)
 export const getProfile = async () => {
-  const token = localStorage.getItem('token');
+  const token = useStore.getState().token;
   if (!token) throw new Error("No token found, please login.");
 
   try {
@@ -52,5 +55,7 @@ export const getProfile = async () => {
 
 // Logout function (unchanged)
 export const logout = () => {
-  localStorage.removeItem('token');
+  useStore.getState().setToken(null);
+  useStore.getState().setUser(null);
 };
+  

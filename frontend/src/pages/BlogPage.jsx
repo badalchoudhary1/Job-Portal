@@ -1,8 +1,4 @@
-
-
-// src/pages/BlogPage.jsx
-import { createSignal } from 'solid-js';
-import { createEffect } from 'solid-js';
+import { useEffect, useState } from "react";
 
 // Sample data for blog posts
 const blogData = [
@@ -44,19 +40,13 @@ const blogData = [
 ];
 
 const BlogPage = () => {
-  const [blogPosts, setBlogPosts] = createSignal(blogData);
+  const [blogPosts, setBlogPosts] = useState(blogData);
 
   // Pagination state
-  const [currentPage, setCurrentPage] = createSignal(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 2;
-  
-  // Calculating the displayed posts based on current page
-  const displayedPosts = () => {
-    const startIndex = (currentPage() - 1) * postsPerPage;
-    return blogPosts().slice(startIndex, startIndex + postsPerPage);
-  };
 
-  const totalPages = () => Math.ceil(blogPosts().length / postsPerPage);
+  const totalPages = () => Math.ceil(blogPosts.length / postsPerPage);
 
   // Handle pagination navigation
   const handlePageChange = (page) => {
@@ -66,70 +56,70 @@ const BlogPage = () => {
   };
 
   // Effect to reset page when the blog posts data changes
-  createEffect(() => {
+  useEffect(() => {
     setCurrentPage(1); // Reset to first page on data change
-  });
+  }, []);
 
   return (
-    <div class="p-6 bg-gray-100">
-      <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">Blog</h1>
+    <div className="p-6 bg-gray-100">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">Blog</h1>
 
-      <div class="flex">
+      <div className="flex">
         {/* Sidebar */}
-        <div class="w-1/4 pr-6">
-          <div class="bg-white p-4 shadow-md rounded-md">
-            <h2 class="text-xl font-semibold mb-4">Categories</h2>
-            <ul class="space-y-2">
-              <li><a href="#" class="text-gray-600 hover:text-gray-900">Career Tips</a></li>
-              <li><a href="#" class="text-gray-600 hover:text-gray-900">Programming</a></li>
-              <li><a href="#" class="text-gray-600 hover:text-gray-900">Job Search</a></li>
-              <li><a href="#" class="text-gray-600 hover:text-gray-900">Resume Building</a></li>
+        <div className="w-1/4 pr-6">
+          <div className="bg-white p-4 shadow-md rounded-md">
+            <h2 className="text-xl font-semibold mb-4">Categories</h2>
+            <ul className="space-y-2">
+              <li><a href="#" className="text-gray-600 hover:text-gray-900">Career Tips</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-gray-900">Programming</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-gray-900">Job Search</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-gray-900">Resume Building</a></li>
             </ul>
           </div>
         </div>
 
         {/* Main Content */}
-        <div class="w-3/4">
-          <div class="space-y-6">
-            {displayedPosts().map((post, index) => (
-              <div key={index} class="bg-white p-6 shadow-md rounded-md">
-                <div class="mb-4">
+        <div className="w-3/4">
+          <div className="space-y-6">
+            {blogPosts?.map((post, index) => (
+              <div key={index} className="bg-white p-6 shadow-md rounded-md">
+                <div className="mb-4">
                   
-                  <img src={post.imageUrl} alt={post.title} class="w-full h-full object-cover rounded-md" style="width: 500px; height: 300px;" />
+                  <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover rounded-md" style={{idth: "500px", height: "300px"}} />
                 </div>
-                <h3 class="text-2xl font-semibold text-gray-800 mb-2">{post.title}</h3>
-                <p class="text-gray-500 text-sm mb-2">{`By ${post.author} on ${post.publishedDate}`}</p>
-                <p class="text-gray-600">{post.content}</p>
+                <h3 className="text-2xl font-semibold text-gray-800 mb-2">{post.title}</h3>
+                <p className="text-gray-500 text-sm mb-2">{`By ${post.author} on ${post.publishedDate}`}</p>
+                <p className="text-gray-600">{post.content}</p>
 
                 {/* Tags */}
-                <div class="mt-4">
-                  <h4 class="font-semibold text-gray-700">Tags:</h4>
-                  <ul class="flex space-x-2 mt-2">
+                <div className="mt-4">
+                  <h4 className="font-semibold text-gray-700">Tags:</h4>
+                  <ul className="flex space-x-2 mt-2">
                     {post.tags.map((tag, index) => (
-                      <li key={index} class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full">{tag}</li>
+                      <li key={index} className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full">{tag}</li>
                     ))}
                   </ul>
                 </div>
 
                 {/* Comments Section */}
-                <div class="mt-6">
-                  <h4 class="font-semibold text-gray-800 mb-2">Comments</h4>
-                  <ul class="space-y-4">
+                <div className="mt-6">
+                  <h4 className="font-semibold text-gray-800 mb-2">Comments</h4>
+                  <ul className="space-y-4">
                     {post.comments.map((comment, index) => (
-                      <li key={index} class="bg-gray-50 p-4 rounded-md">
-                        <p class="font-semibold text-gray-700">{comment.user}</p>
-                        <p class="text-gray-600">{comment.content}</p>
+                      <li key={index} className="bg-gray-50 p-4 rounded-md">
+                        <p className="font-semibold text-gray-700">{comment.user}</p>
+                        <p className="text-gray-600">{comment.content}</p>
                       </li>
                     ))}
                   </ul>
 
                   {/* Comment Form (Optional) */}
-                  <div class="mt-4">
+                  <div className="mt-4">
                     <textarea
                       placeholder="Add a comment..."
-                      class="w-full p-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 border border-gray-300 rounded-md"
                     />
-                    <button class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md">Submit</button>
+                    <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md">Submit</button>
                   </div>
                 </div>
               </div>
@@ -137,19 +127,19 @@ const BlogPage = () => {
           </div>
 
           {/* Pagination */}
-          <div class="flex justify-center mt-8">
+          <div className="flex justify-center mt-8">
             <button
-              onClick={() => handlePageChange(currentPage() - 1)}
-              class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2"
-              disabled={currentPage() === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md mr-2"
+              disabled={currentPage === 1}
             >
               Prev
             </button>
-            <span class="text-lg font-semibold text-gray-800">{`Page ${currentPage()} of ${totalPages()}`}</span>
+            <span className="text-lg font-semibold text-gray-800">{`Page ${currentPage} of ${totalPages()}`}</span>
             <button
-              onClick={() => handlePageChange(currentPage() + 1)}
-              class="px-4 py-2 bg-blue-500 text-white rounded-md ml-2"
-              disabled={currentPage() === totalPages()}
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md ml-2"
+              disabled={currentPage === totalPages()}
             >
               Next
             </button>

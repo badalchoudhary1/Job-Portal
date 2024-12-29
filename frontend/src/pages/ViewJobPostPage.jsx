@@ -2,26 +2,18 @@
 
 
 // src/pages/ViewJobPostPage.jsx
-import { createEffect } from "solid-js";
 import ViewJobPost from "../components/ViewJobPost";
 import useStore from "../store";
 
 function ViewJobPostPage() {
-  const store = useStore;
-
-  // Reactive access to state
-  createEffect(() => {
-    console.log("Count changed:", store.getState().count);
-  });
+  const {increment, count} = useStore();
 
   return (
     <>
       <button
-        onClick={() => {
-          store.getState().increment();
-        }}
+        onClick={increment}
       >
-        {store.getState().count}
+        {count}
       </button>
       <ViewJobPost />
     </>

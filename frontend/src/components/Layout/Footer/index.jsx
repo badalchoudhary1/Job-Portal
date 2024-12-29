@@ -1,41 +1,41 @@
 
 const Footer  = () => {
   return (
-    <footer class="bg-gray-800 text-gray-200 py-6">
-      <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <footer className="bg-gray-800 text-gray-200 py-6">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Company Info */}
           <div>
-            <h3 class="text-lg font-semibold">JobPortal</h3>
-            <p class="mt-2 text-sm">
+            <h3 className="text-lg font-semibold">JobPortal</h3>
+            <p className="mt-2 text-sm">
               Your one-stop platform for connecting talent with opportunity. Join us to build your career.
             </p>
           </div>
 
           {/* Navigation Links */}
           <div>
-            <h3 class="text-lg font-semibold">Quick Links</h3>
-            <ul class="mt-2 space-y-2 text-sm">
-              <li><a href="/about" class="hover:underline">About Us</a></li>
-              <li><a href="/jobs" class="hover:underline">Browse Jobs</a></li>
-              <li><a href="/contact" class="hover:underline">Contact</a></li>
-              <li><a href="/privacy" class="hover:underline">Privacy Policy</a></li>
+            <h3 className="text-lg font-semibold">Quick Links</h3>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li><a href="/about" className="hover:underline">About Us</a></li>
+              <li><a href="/jobs" className="hover:underline">Browse Jobs</a></li>
+              <li><a href="/contact" className="hover:underline">Contact</a></li>
+              <li><a href="/privacy" className="hover:underline">Privacy Policy</a></li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div>
-            <h3 class="text-lg font-semibold">Follow Us</h3>
-            <div class="mt-2 flex space-x-4">
+            <h3 className="text-lg font-semibold">Follow Us</h3>
+            <div className="mt-2 flex space-x-4">
               <a
                 href="https://facebook.com"
                 target="_blank"
-                class="hover:text-blue-500"
+                className="hover:text-blue-500"
                 aria-label="Facebook"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  className="h-6 w-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -45,12 +45,12 @@ const Footer  = () => {
               <a
                 href="https://twitter.com"
                 target="_blank"
-                class="hover:text-blue-400"
+                className="hover:text-blue-400"
                 aria-label="Twitter"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  className="h-6 w-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -60,12 +60,12 @@ const Footer  = () => {
               <a
                 href="https://linkedin.com"
                 target="_blank"
-                class="hover:text-blue-600"
+                className="hover:text-blue-600"
                 aria-label="LinkedIn"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  className="h-6 w-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -76,7 +76,7 @@ const Footer  = () => {
           </div>
         </div>
 
-        <div class="mt-8 border-t border-gray-700 pt-4 text-center text-sm">
+        <div className="mt-8 border-t border-gray-700 pt-4 text-center text-sm">
           <p>&copy; 2024 JobPortal. All rights reserved.</p>
         </div>
       </div>
