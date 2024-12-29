@@ -91,6 +91,7 @@ class EmployerProfileViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @permission_classes([AllowAny]) 
 class JobSeekerListCreateView(generics.ListCreateAPIView):
     queryset = JobSeeker.objects.all()
@@ -101,16 +102,18 @@ class JobSeekerDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = JobSeekerSerializer
 
 @api_view(['POST'])
-@permission_classes([AllowAny])  # Allows anyone to register
+@permission_classes([AllowAny])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        # Create and return token for the new user
-        token, created = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({
-            'message': 'User created successfully',
-            'token': token.key  # Send back the token
+            'message': 'User registered successfully',
+            'role': user.role,
+            'token': token.key,
+            'username': user.username,
+            'email': user.email,
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

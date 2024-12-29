@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Job,EmployerProfile,JobSeeker
-from django.contrib.auth.models import User
-
+# from django.contrib.auth.models import User
+from .models import CustomUser
 
 class JobSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,18 +18,19 @@ class JobSeekerSerializer(serializers.ModelSerializer):
         model = JobSeeker
         fields = '__all__'
 
-
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    role = serializers.ChoiceField(choices=CustomUser.ROLE_CHOICES)
 
     class Meta:
-        model = User
-        fields = ['username', 'password', 'email']
+        model = CustomUser
+        fields = ['username', 'email', 'password', 'role']
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            role=validated_data['role']
         )
         return user

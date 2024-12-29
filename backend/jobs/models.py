@@ -1,5 +1,7 @@
 # jobs/models.py
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
 
 class Job(models.Model):
     title = models.CharField(max_length=255)
@@ -23,6 +25,17 @@ class EmployerProfile(models.Model):
 
     def __str__(self):
         return self.company_name
+
+
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = (
+        ('job_seeker', 'Job Seeker'),
+        ('employer', 'Employer'),
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='job_seeker')
+
+    def __str__(self):
+        return self.username
     
 
 class JobSeeker(models.Model):
@@ -38,3 +51,5 @@ class JobSeeker(models.Model):
 
     def __str__(self):
         return self.name
+    
+
