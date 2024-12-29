@@ -12,6 +12,7 @@ const JobSeekerDetails = () => {
   }, []);
 
   return (
+    <div className="py-8 px-2">
     <div className="p-6 max-w-lg mx-auto border rounded shadow-sm">
       {jobSeeker && (
         <>
@@ -33,6 +34,7 @@ const JobSeekerDetails = () => {
           </p>
         </>
       )}
+    </div>
     </div>
   );
 };

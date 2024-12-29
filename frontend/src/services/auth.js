@@ -6,13 +6,13 @@ import useStore from '../store';
 const API_URL = 'http://localhost:8000/api/api/';  // Make sure this matches your Django API
 
 // Register function
-export const register = async (username, email, password, user_type) => {
+export const register = async (username, email, password, role) => {
   try {
     const response = await axios.post(`${API_URL}register/`, {
       username,
       email,
       password,
-      user_type,
+      role,
     });
     
     return response;

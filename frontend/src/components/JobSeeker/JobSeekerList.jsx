@@ -14,7 +14,7 @@ const JobSeekerList = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Job Seeker Profiles</h1>
       <Link
-        href="/job-seekers/new"
+        to="/job-seekers/new"
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Add New Job Seeker
@@ -30,7 +30,7 @@ const JobSeekerList = () => {
             <h2 className="font-bold">{jobSeeker.name}</h2>
             <p>{jobSeeker.location}</p>
             <Link
-              href={`/job-seekers/${jobSeeker.id}`}
+              to={`/job-seekers/${jobSeeker.id}`}
               className="text-blue-500 hover:underline"
             >
               View Profile

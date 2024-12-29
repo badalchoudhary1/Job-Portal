@@ -49,6 +49,7 @@ const JobSeekerForm = () => {
   };
 
   return (
+    <div className="py-8 px-2">
     <form
       onSubmit={handleSubmit}
       className="p-6 max-w-lg mx-auto border rounded shadow-sm"
@@ -129,6 +130,7 @@ const JobSeekerForm = () => {
         Submit
       </button>
     </form>
+    </div>
   );
 };
 

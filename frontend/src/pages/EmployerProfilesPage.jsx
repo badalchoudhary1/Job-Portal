@@ -1,5 +1,3 @@
-
-    
 import { fetchAllEmployerProfiles } from "../api/employerProfile"; // API function for fetching all profiles
 import { useEffect, useState } from "react";
 
