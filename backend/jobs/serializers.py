@@ -1,11 +1,16 @@
 from rest_framework import serializers
-from .models import Job,EmployerProfile,JobSeeker
+from .models import Job,EmployerProfile,JobSeeker, JobApplication
 # from django.contrib.auth.models import User
 from .models import CustomUser
 
 class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
+        fields = '__all__'
+
+class JobApplicatoinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobApplication
         fields = '__all__'
 
 class EmployerProfileSerializer(serializers.ModelSerializer):

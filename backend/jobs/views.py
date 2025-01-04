@@ -2,7 +2,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import JobSerializer
-from .models import Job
+from .models import Job, CustomUser
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 # views.py
@@ -13,6 +13,7 @@ from .serializers import EmployerProfileSerializer
 from rest_framework import generics
 from .models import JobSeeker
 from .serializers import JobSeekerSerializer
+from .serializers import JobApplicatoinSerializer
 
 
 from rest_framework.permissions import AllowAny
@@ -91,7 +92,6 @@ class EmployerProfileViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @permission_classes([AllowAny]) 
 class JobSeekerListCreateView(generics.ListCreateAPIView):
     queryset = JobSeeker.objects.all()
@@ -145,3 +145,19 @@ def profile(request):
     return Response({
         'message': f'Hello, {request.user.username}! This is your profile.'
     })
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])   # Allows anyone to access this endpoint
+def apply_job(request):
+    # body = {applicant_id: request.data.id, job_id: request.data.id, status: 'pending'}
+
+    request.body.job = Job.objects.get(pk=request.body['job_id'])
+    request.body.applicant = CustomUser.objects.get(pk=request.body['applicant_id'])
+    request.body.status = 'pending'
+
+    serializer = JobApplicatoinSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

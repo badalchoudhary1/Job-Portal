@@ -22,3 +22,4 @@ urlpatterns = [
     path('api/login/', login_user, name='login_user'),
     path('api/profile/', profile, name='profile'),
 ]
+
