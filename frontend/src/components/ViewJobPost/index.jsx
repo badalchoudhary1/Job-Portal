@@ -1,6 +1,7 @@
 import JobCard from "../JobCard/JobCard.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { fetchJobsAction} from "../../services/jobs.js";
 
 const ViewJobPostPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -10,43 +11,25 @@ const ViewJobPostPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // Fetch jobs data from the API
-  const fetchJobs = async (url = "http://127.0.0.1:8000/api/jobs/") => {
-    setLoading(true);
-  
-    // Correctly construct the query string for title and company name
-    const searchQuery = searchParams.title ? `title=${searchParams.title}` : "";
-    const companyName = searchParams.company_name ? `company_name=${searchParams.company_name}` : "";
-    
-    // Combine the search parameters
-    const queryString = [searchQuery, companyName].filter(Boolean).join("&");
-    
-    // Construct the final URL
-    const apiUrl = queryString ? `${url}?${queryString}` : url;
-  
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-  
-      if (data && Array.isArray(data.results)) {
+
+  function fetchJobs () {
+    fetchJobsAction(Object.fromEntries(searchParams.entries()))
+    .then((data) => { 
         setJobs(data.results);
         setNextPage(data.next);
         setPreviousPage(data.previous);
-      } else {
-        setJobs([]); // In case no results are returned
-      }
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setJobs([]); // Reset jobs in case of error
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  // Refetch jobs when search params change
+        setLoading(false)
+    })
+    .catch(e => {
+      setJobs([]); // In case no results are returned
+      console.log(e)
+    })
+  }
+
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    fetchJobs()
+  }, [searchParams])
+
 
   const handleNextPage = () => {
     if (nextPage) {

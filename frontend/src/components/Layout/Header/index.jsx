@@ -29,6 +29,9 @@ const Header = () => {
     navigate("/"); // Clear search query and filters
   };
 
+
+  console.log(user, 'user')
+
   return (
     <header className="bg-gray-800 text-gray-200 shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
@@ -184,7 +187,11 @@ const Header = () => {
             )}
           </svg>
         </button>
+        <div>
+          {user.username}
+        </div>
       </div>
+      
       {isMenuOpen && (
         <nav className="md:hidden bg-gray-700 py-4">
           <ul className="space-y-4 text-center">

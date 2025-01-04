@@ -3,12 +3,10 @@
 import axios from 'axios';
 import useStore from '../store';
 
-const API_URL = 'http://localhost:8000/api/api/';  // Make sure this matches your Django API
-
 // Register function
 export const register = async (username, email, password, role) => {
   try {
-    const response = await axios.post(`${API_URL}register/`, {
+    const response = await axios.post(`/api/register/`, {
       username,
       email,
       password,
@@ -26,7 +24,7 @@ export const register = async (username, email, password, role) => {
 // Login function (unchanged)
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}login/`, { username, password });
+    const response = await axios.post(`/api/login/`, { username, password });
     const { token , user} = response.data;
      useStore.getState().setToken(token);
      useStore.getState().setUser(user);
@@ -43,9 +41,9 @@ export const getProfile = async () => {
   if (!token) throw new Error("No token found, please login.");
 
   try {
-    const response = await axios.get(`${API_URL}profile/`, {
+    const response = await axios.get(`/api/profile/`, {
       headers: { Authorization: `Token ${token}` },
-    });
+    }); 
     return response.data;
   } catch (error) {
     console.error("Error fetching profile:", error.response?.data || error.message);

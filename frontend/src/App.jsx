@@ -18,6 +18,8 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import useStore from './store';
 
+import "./config/axios"
+
 const App = () => {
   const {token, user} = useStore()
   return (
