@@ -35,6 +35,9 @@ export const login = async (username, password) => {
   }
 };
 
+// Login function to send credentials to the backend
+
+
 // Get Profile function (unchanged)
 export const getProfile = async () => {
   const token = useStore.getState().token;

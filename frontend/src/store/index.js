@@ -10,10 +10,12 @@ const useStore = create(
       user: null,
       setUser: (value) => set({ user: value }),
       isLoading: false,  // Set isLoading to boolean
-      setIsLoading: (loading) => set({ isLoading: loading }),  // Set directly to a boolean
+      setIsLoading: (loading) => set({ isLoading: loading }), 
+       // Set directly to a boolean
     }),
     { name: "job-portal" } // Persist in localStorage
   )
 );
 export default useStore;
+
 
