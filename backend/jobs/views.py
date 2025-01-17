@@ -5,6 +5,7 @@ from .serializers import JobSerializer
 from .models import Job, CustomUser
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth import get_user_model
 # views.py
 from rest_framework.decorators import action 
 from rest_framework import status, viewsets
@@ -121,25 +122,38 @@ def register_user(request):
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.contrib.auth import get_user_model
+from rest_framework import status
+
 # User Login View (Token Authentication)
 @api_view(['POST'])
 @permission_classes([AllowAny])  # Allows anyone to login
 def login_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    User = get_user_model()  # Custom user model if using one
 
     user = User.objects.filter(username=username).first()
 
     if user and user.check_password(password):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
-            'message': 'Login successful',
-            'token': token.key  # Return token after successful login
+            'token': token.key,
+            'user': {
+                'username': user.username,
+                'email': user.email,
+                'role': user.role,  # Ensure `role` is a field in your User model
+            }
         }, status=status.HTTP_200_OK)
 
     return Response({
         'message': 'Invalid credentials'
     }, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 # Protected Route Example (Only accessible by logged-in users)

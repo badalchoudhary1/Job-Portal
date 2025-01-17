@@ -11,19 +11,6 @@ router.register(r'employer-profile', EmployerProfileViewSet, basename='employer-
 
 # Add the router to the URL patterns
 urlpatterns = [
-    # path('jobs/', job_list, name='job_list'),
-    # path('jobs/<int:pk>/', job_detail, name='job_detail'),
-
-    # # Include the employer-profile URLs from the router
-    # path('api/', include(router.urls)),  # Include the employer profile routes here
-    # path('job-seekers/', JobSeekerListCreateView.as_view(), name='job-seeker-list-create'),
-    # path('job-seekers/<int:pk>/', JobSeekerDetailView.as_view(), name='job-seeker-detail'),
-    # path('api/register/', register_user, name='register_user'),
-    # path('api/login/', login_user, name='login_user'),
-    # path('api/profile/', profile, name='profile'),
-
-
-
     path('jobs/', job_list, name='job_list'),
     path('jobs/<int:pk>/', job_detail, name='job_detail'),
     path('jobs/apply/', apply_job, name='apply_job'),
