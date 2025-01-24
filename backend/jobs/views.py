@@ -1,110 +1,83 @@
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import JobSerializer
-from .models import Job, CustomUser
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
-# views.py
-from rest_framework.decorators import action 
-from rest_framework import status, viewsets
-from .models import EmployerProfile
-from .serializers import EmployerProfileSerializer
-from rest_framework import generics
-from .models import JobSeeker
-from .serializers import JobSeekerSerializer
-from .serializers import JobApplicatoinSerializer
 
 
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
 from .serializers import RegisterSerializer
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])   # Allows anyone to access this endpoint
-def job_list(request):
-    if request.method == 'GET':
-        title = request.query_params.get('title', None)
-        company_name = request.query_params.get('company_name', None)
-
-        jobs = Job.objects.all()
-
-        # Apply filters if provided
-        if title:
-            jobs = jobs.filter(title__icontains=title)
-        if company_name:
-            jobs = jobs.filter(company_name__icontains=company_name)
-
-        # Pagination (optional)
-        paginator = PageNumberPagination()
-        paginator.page_size = 12  # Adjust page size as needed
-        result_page = paginator.paginate_queryset(jobs, request)
-        serializer = JobSerializer(result_page, many=True)
-        return paginator.get_paginated_response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = JobSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from .models import JobSeeker
+from .serializers import JobSeekerSerializer
 
 
+# class JobSeekerViewSet(viewsets.ModelViewSet):
+#     queryset = JobSeeker.objects.all()
+#     print(queryset)
+#     serializer_class = JobSeekerSerializer
+#     permission_classes = [IsAuthenticated]
 
+#     def get_queryset(self):
+#         user = self.request.user
+#         if user.is_authenticated and user.role == 'job_seeker':
+#             return JobSeeker.objects.filter(user=user)
+#         return JobSeeker.objects.none()
 
-
-@api_view(['GET'])
-@permission_classes([AllowAny]) 
-def job_detail(request, pk):
-    try:
-        job = Job.objects.get(pk=pk)
-    except Job.DoesNotExist:
-        return Response({"error": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = JobSerializer(job)
-    return Response(serializer.data)
-
-
-@permission_classes([AllowAny]) 
-class EmployerProfileViewSet(viewsets.ModelViewSet):
-    queryset = EmployerProfile.objects.all()
-    serializer_class = EmployerProfileSerializer
+#     @action(detail=False, methods=["post"], url_path="create-profile")
+#     def create_profile(self, request):
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(user=request.user)
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class JobSeekerViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing Job Seeker profiles.
+    """
+    queryset = JobSeeker.objects.all()
+    serializer_class = JobSeekerSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return EmployerProfile.objects.all()
+        """
+        Return all job seeker profiles for authenticated users.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return JobSeeker.objects.all()  # Allow viewing all profiles
+        return JobSeeker.objects.none()  # Return no data for unauthenticated users
 
-    @action(detail=True, methods=['get'])
-    def profile(self, request, pk=None):
-        try:
-            profile = EmployerProfile.objects.get(id=pk)
-            serializer = EmployerProfileSerializer(profile)
-            return Response(serializer.data)
-        except EmployerProfile.DoesNotExist:
-            return Response({'detail': 'Employer profile not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"], url_path="create-profile")
     def create_profile(self, request):
-        data = request.data
-        serializer = EmployerProfileSerializer(data=data)
+        """
+        Handle job seeker profile creation.
+        """
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Modify retrieve method to prevent showing irrelevant or specific useless data.
+        """
+        try:
+            instance = self.get_object()  # Get the specific object
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except JobSeeker.DoesNotExist:
+            return Response({"detail": "Job Seeker profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
-@permission_classes([AllowAny]) 
-class JobSeekerListCreateView(generics.ListCreateAPIView):
-    queryset = JobSeeker.objects.all()
-    serializer_class = JobSeekerSerializer
-@permission_classes([AllowAny]) 
-class JobSeekerDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = JobSeeker.objects.all()
-    serializer_class = JobSeekerSerializer
+# Authentication and authorization part
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -122,12 +95,6 @@ def register_user(request):
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from django.contrib.auth import get_user_model
-from rest_framework import status
 
 # User Login View (Token Authentication)
 @api_view(['POST'])
@@ -155,7 +122,6 @@ def login_user(request):
     }, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
 # Protected Route Example (Only accessible by logged-in users)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # Requires user to be authenticated
@@ -163,19 +129,3 @@ def profile(request):
     return Response({
         'message': f'Hello, {request.user.username}! This is your profile.'
     })
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])   # Allows anyone to access this endpoint
-def apply_job(request):
-    # body = {applicant_id: request.data.id, job_id: request.data.id, status: 'pending'}
-
-    request.body.job = Job.objects.get(pk=request.body['job_id'])
-    request.body.applicant = CustomUser.objects.get(pk=request.body['applicant_id'])
-    request.body.status = 'pending'
-
-    serializer = JobApplicatoinSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

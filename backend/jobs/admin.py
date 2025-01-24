@@ -1,11 +1,6 @@
 from django.contrib import admin
-from .models import JobSeeker
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
-
-@admin.register(JobSeeker)
-class JobSeekerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'location', 'created_at']
+from .models import CustomUser, JobSeeker
 
 
 class CustomUserAdmin(UserAdmin):
@@ -16,4 +11,11 @@ class CustomUserAdmin(UserAdmin):
         ('Role Information', {'fields': ('role',)}),
     )
 
+
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+@admin.register(JobSeeker)
+class JobSeekerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'location')
+    search_fields = ('name', 'email')

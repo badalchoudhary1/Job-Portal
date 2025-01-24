@@ -39,12 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  
-    'jobs', 
+    'rest_framework',
+    'jobs',
     'corsheaders',
     'rest_framework.authtoken',
 
-]       
+]
 
 # DRF settings
 REST_FRAMEWORK = {
@@ -52,10 +52,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Ensures that only authenticated users can access certain endpoints
+        # Ensures that only authenticated users can access certain endpoints
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
 
 
 MIDDLEWARE = [
@@ -93,14 +93,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES={
-    'default':{
-        'ENGINE':'django.db.backends.mysql',
-        'NAME':'job_portal',
-        'USER':'root',
-        'PASSWORD':'badal@123',
-        'HOST':'localhost',
-        'PORT':3306
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'portal',
+        'USER': 'root',
+        'PASSWORD': 'badal@123',
+        'HOST': 'localhost',
+        'PORT': 3306
     }
 }
 

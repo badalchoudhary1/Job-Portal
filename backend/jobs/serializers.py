@@ -1,27 +1,6 @@
 from rest_framework import serializers
-from .models import Job,EmployerProfile,JobSeeker, JobApplication
-# from django.contrib.auth.models import User
-from .models import CustomUser
+from .models import CustomUser, JobSeeker
 
-class JobSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Job
-        fields = '__all__'
-
-class JobApplicatoinSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = JobApplication
-        fields = '__all__'
-
-class EmployerProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmployerProfile
-        fields = ['id', 'company_name', 'description', 'logo', 'location', 'website', 'created_at', 'updated_at']
-
-class JobSeekerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = JobSeeker
-        fields = '__all__'
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -39,3 +18,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             role=validated_data['role']
         )
         return user
+
+
+class JobSeekerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobSeeker
+        fields = "__all__"
+        read_only_fields = ['user']
+
+    def validate_email(self, value):
+        if JobSeeker.objects.filter(email=value).exists():
+            raise serializers.ValidationError("This email is already in use.")
+        return value
