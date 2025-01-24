@@ -27,3 +27,4 @@ export const applyJobAction = async (body = {}) => {
     throw error;
   } 
 };
+

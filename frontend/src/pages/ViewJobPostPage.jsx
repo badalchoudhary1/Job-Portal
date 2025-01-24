@@ -1,6 +1,3 @@
-
-
-
 // src/pages/ViewJobPostPage.jsx
 import ViewJobPost from "../components/ViewJobPost";
 import useStore from "../store";

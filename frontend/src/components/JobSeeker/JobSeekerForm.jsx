@@ -1,136 +1,56 @@
-
-import { useNavigate } from "react-router-dom"; 
-import { useState } from "react";
+import React, { useState } from "react";
+import { createJobSeekerProfile } from "../../api/jobSeekerApi";
 
 const JobSeekerForm = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [skills, setSkills] = useState("");
-  const [bio, setBio] = useState("");
-  const [location, setLocation] = useState("");
-  const [resume, setResume] = useState(null);
-  const [profilePicture, setProfilePicture] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    resume: null,
+    profile_picture: null,
+    skills: "",
+    bio: "",
+    location: "",
+  });
 
-  const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: files[0] }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("skills", skills);
-    formData.append("bio", bio);
-    formData.append("location", location);
-    if (resume) formData.append("resume", resume);
-    if (profilePicture) formData.append("profile_picture", profilePicture);
-  
-    // Debugging: Log all FormData key-value pairs
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+    const form = new FormData();
+    for (const key in formData) {
+      form.append(key, formData[key]);
     }
-  
-    fetch("http://127.0.0.1:8000/api/job-seekers/", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          navigate("/job-seekers");
-        } else {
-          console.error("Failed to save job seeker profile.");
-          response.text().then((text) => console.error(text));
-        }
-      })
-      .catch((error) => {
-        console.error("Error during submission:", error);
-      });
+    try {
+      const response = await createJobSeekerProfile(form);
+      alert("Profile created successfully!");
+      console.log(response);
+    } catch (error) {
+      console.error("Error creating profile:", error.response?.data || error.message);
+      alert("Failed to create profile. Please try again.");
+    }
   };
 
   return (
-    <div className="py-8 px-2">
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 max-w-lg mx-auto border rounded shadow-sm"
-    >
-      <h1 className="text-2xl font-bold mb-4">Job Seeker Form</h1>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Name</label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border rounded"
-          value={name}
-          onInput={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Email</label>
-        <input
-          type="email"
-          className="w-full px-3 py-2 border rounded"
-          value={email}
-          onInput={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Phone</label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border rounded"
-          value={phone}
-          onInput={(e) => setPhone(e.target.value)}
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Skills</label>
-        <textarea
-          className="w-full px-3 py-2 border rounded"
-          value={skills}
-          onInput={(e) => setSkills(e.target.value)}
-        ></textarea>
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Bio</label>
-        <textarea
-          className="w-full px-3 py-2 border rounded"
-          value={bio}
-          onInput={(e) => setBio(e.target.value)}
-        ></textarea>
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Location</label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border rounded"
-          value={location}
-          onInput={(e) => setLocation(e.target.value)}
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Resume</label>
-        <input
-          type="file"
-          onInput={(e) => setResume(e.target.files[0])}
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Profile Picture</label>
-        <input
-          type="file"
-          onInput={(e) => setProfilePicture(e.target.files[0])}
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        Submit
-      </button>
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="name" placeholder="Name" onChange={handleChange} />
+      <input type="email" name="email" placeholder="Email" onChange={handleChange} />
+      <input type="text" name="phone" placeholder="Phone" onChange={handleChange} />
+      <input type="file" name="resume" onChange={handleFileChange} />
+      <input type="file" name="profile_picture" onChange={handleFileChange} />
+      <textarea name="skills" placeholder="Skills" onChange={handleChange}></textarea>
+      <textarea name="bio" placeholder="Bio" onChange={handleChange}></textarea>
+      <input type="text" name="location" placeholder="Location" onChange={handleChange} />
+      <button type="submit">Create Profile</button>
     </form>
-    </div>
   );
 };
 

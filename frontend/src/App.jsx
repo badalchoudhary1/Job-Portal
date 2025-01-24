@@ -54,19 +54,6 @@ const App = () => {
             <Route path="/job-seekers/new" element={<JobSeekerForm />} />
           </>)}
 
-   
-          {/* <Route path="/profile/employer" element={<EmployerProfilesPage />} />
-          <Route path="/profile/employer/:id" element={<EmployerProfilePage />} /> */}
-          {/* <Route path="/job-seekers" element={<JobSeekerList />} />
-          <Route path="/job-seekers/new" element={<JobSeekerForm />} />
-          <Route path="/job-seekers/:id" element={<JobSeekerDetails />} />
-          <Route path="/compare-jobs" element={<CompareJobsPage />} />
-          <Route path="/faq" element={<FAQPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/success-stories" element={<SuccessStoriesPage />} />
-          <Route path="/job/:id" element={<JobDetailsPage />} />
-          <Route path="/profile" element={<Profile />} /> */}
-
           <Route path="*" element={<div className='h-[200px] bg-gray-400'>Not Found</div>} />
 
          </Routes>
