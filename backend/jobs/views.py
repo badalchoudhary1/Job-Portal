@@ -17,26 +17,73 @@ from rest_framework.decorators import action
 from .models import JobSeeker
 from .serializers import JobSeekerSerializer
 
+from .models import Employer
+from .serializers import EmployerSerializer
 
-# class JobSeekerViewSet(viewsets.ModelViewSet):
-#     queryset = JobSeeker.objects.all()
-#     print(queryset)
-#     serializer_class = JobSeekerSerializer
-#     permission_classes = [IsAuthenticated]
 
-#     def get_queryset(self):
-#         user = self.request.user
-#         if user.is_authenticated and user.role == 'job_seeker':
-#             return JobSeeker.objects.filter(user=user)
-#         return JobSeeker.objects.none()
+class EmployerProfileViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage Employer profiles.
+    Employers can create, view, and update their own profile.
+    Admin users can access all employer profiles.
+    """
+    queryset = Employer.objects.all()
+    serializer_class = EmployerSerializer
+    permission_classes = [IsAuthenticated]
 
-#     @action(detail=False, methods=["post"], url_path="create-profile")
-#     def create_profile(self, request):
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save(user=request.user)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        """
+        Employers can only view their own profile.
+        Admin users can view all employer profiles.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            if user.is_staff:  # Allow admins to view all profiles
+                return Employer.objects.all()
+            # Restrict to the logged-in employer
+            return Employer.objects.all()
+        return Employer.objects.none()
+
+    # def get_queryset(self):
+    #     """
+    #     Employers can only view their own profile.
+    #     Admin users can view all employer profiles.
+    #     """
+    #     user = self.request.user
+    #     if user.is_authenticated:
+    #         if user.is_staff:
+    #             return Employer.objects.filter(user=user)
+    #         return Employer.objects.filter(user=user)
+    #     return Employer.objects.none()
+
+    @action(detail=False, methods=['post'], url_path="create-emp-profile")
+    def create_profile(self, request):
+        """
+        Allows employers to create a profile.
+        Prevents duplicate profile creation for the same user.
+        """
+        user = request.user
+        if Employer.objects.filter(user=user).exists():
+            return Response({"error": "Employer profile already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Modify retrieve method to prevent showing irrelevant or specific useless data.
+        """
+        try:
+            instance = self.get_object()  # Get the specific object
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Employer.DoesNotExist:
+            return Response({"detail": "Employer profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
 class JobSeekerViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Job Seeker profiles.
@@ -75,8 +122,6 @@ class JobSeekerViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         except JobSeeker.DoesNotExist:
             return Response({"detail": "Job Seeker profile not found."}, status=status.HTTP_404_NOT_FOUND)
-
-# Authentication and authorization part
 
 
 @api_view(['POST'])

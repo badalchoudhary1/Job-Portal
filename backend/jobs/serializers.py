@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, JobSeeker
+from .models import CustomUser, JobSeeker, Employer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -30,3 +30,10 @@ class JobSeekerSerializer(serializers.ModelSerializer):
         if JobSeeker.objects.filter(email=value).exists():
             raise serializers.ValidationError("This email is already in use.")
         return value
+
+
+class EmployerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employer
+        fields = "__all__"
+        read_only_fields = ['user']
