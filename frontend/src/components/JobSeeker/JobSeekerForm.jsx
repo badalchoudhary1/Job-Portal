@@ -1,36 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { createJobSeekerProfile } from "../../api/jobSeekerApi";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const schema = z.object({
+  name: z.string().min(1, "Name is required."),
+  email: z.string().email("Please enter a valid email address."),
+  phone: z.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits."),
+  skills: z.string().min(1, "Skills are required."),
+  bio: z.string().optional(),
+  location: z.string().min(1, "Location is required."),
+});
+
 const JobSeekerForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    resume: null,
-    profile_picture: null,
-    skills: "",
-    bio: "",
-    location: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: files[0] }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = new FormData();
-    for (const key in formData) {
-      form.append(key, formData[key]);
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
     }
+
     try {
-      const response = await createJobSeekerProfile(form);
+      const response = await createJobSeekerProfile(formData); // Replace with your API call
       alert("Profile created successfully!");
       console.log(response);
     } catch (error) {
@@ -40,18 +40,94 @@ const JobSeekerForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="name" placeholder="Name" onChange={handleChange} />
-      <input type="email" name="email" placeholder="Email" onChange={handleChange} />
-      <input type="text" name="phone" placeholder="Phone" onChange={handleChange} />
-      <input type="file" name="resume" onChange={handleFileChange} />
-      <input type="file" name="profile_picture" onChange={handleFileChange} />
-      <textarea name="skills" placeholder="Skills" onChange={handleChange}></textarea>
-      <textarea name="bio" placeholder="Bio" onChange={handleChange}></textarea>
-      <input type="text" name="location" placeholder="Location" onChange={handleChange} />
-      <button type="submit">Create Profile</button>
-    </form>
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-12 mb-12">
+      <h2 className="text-2xl font-semibold text-center mb-6">Create Job Seeker Profile</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <input
+            type="text"
+            {...register("name")}
+            placeholder="Name"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        </div>
+        
+        <div>
+          <input
+            type="email"
+            {...register("email")}
+            placeholder="Email"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+        </div>
+
+        <div>
+          <input
+            type="text"
+            {...register("phone")}
+            placeholder="Phone"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+        </div>
+
+        <div>
+          <input
+            type="file"
+            {...register("resume")}
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.resume && <p className="text-red-500 text-sm">{errors.resume.message}</p>}
+        </div>
+
+        <div>
+          <input
+            type="file"
+            {...register("profile_picture")}
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.profile_picture && <p className="text-red-500 text-sm">{errors.profile_picture.message}</p>}
+        </div>
+
+        <div>
+          <textarea
+            {...register("skills")}
+            placeholder="Skills"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          ></textarea>
+          {errors.skills && <p className="text-red-500 text-sm">{errors.skills.message}</p>}
+        </div>
+
+        <div>
+          <textarea
+            {...register("bio")}
+            placeholder="Bio"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          ></textarea>
+        </div>
+
+        <div>
+          <input
+            type="text"
+            {...register("location")}
+            placeholder="Location"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Create Profile
+        </button>
+      </form>
+    </div>
   );
 };
 
 export default JobSeekerForm;
+

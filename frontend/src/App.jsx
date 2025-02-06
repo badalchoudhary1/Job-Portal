@@ -1,9 +1,7 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
-import ViewJobPostPage from './pages/ViewJobPostPage';
 import AboutUsPage from './pages/AboutUsPage';
 import ContactUsPage from './pages/ContactUsPage';
-import EmployerProfilePage from "./pages/EmployerProfilePage";
 import JobSeekerList from "./components/JobSeeker/JobSeekerList";
 import JobSeekerForm from "./components/JobSeeker/JobSeekerForm";
 import JobSeekerDetails from "./components/JobSeeker/JobSeekerDetails";
@@ -11,13 +9,13 @@ import CompareJobsPage from "./pages/CompareJobsPage";
 import FAQPage from './pages/FAQPage';
 import BlogPage from './pages/BlogPage';
 import SuccessStoriesPage from './pages/SuccessStoriesPage';
-import JobDetailsPage from './pages/JobDetailsPage';
-import EmployerProfilesPage from "./pages/EmployerProfilesPage";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import useStore from './store';
-
+import CreateEmployerProfile from './components/Employer/CreateEmployerProfile';
+import EmployerProfile from './components/Employer/EmployerProfile';
+import EmployerList from './components/Employer/EmployerList';
 import "./config/axios"
 
 const App = () => {
@@ -29,25 +27,23 @@ const App = () => {
         <Routes>
           {(user?.role === "employer" || user?.role === "job_seeker") && (
             <>
-            <Route path="/" element={<ViewJobPostPage />} />
-            <Route path="/" element={<ViewJobPostPage />} />
-            <Route path="/view-job" element={<ViewJobPostPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact-us" element={<ContactUsPage />} />
-            <Route path="/job-seekers" element={<JobSeekerList />} />
+            <Route path="/" element={<JobSeekerList />} />
             <Route path="/job-seekers/:id" element={<JobSeekerDetails />} />
             <Route path="/compare-jobs" element={<CompareJobsPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/success-stories" element={<SuccessStoriesPage />} />
-            <Route path="/job/:id" element={<JobDetailsPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/emp-profile/:id" element={<EmployerProfile/>} />
+            <Route path="/employers" element={<EmployerList />} />
+            
             </>
           )}
 
           {(user?.role === "employer") && (<>
-                <Route path="/profile/employer" element={<EmployerProfilesPage />} />
-                <Route path="/profile/employer/:id" element={<EmployerProfilePage />} />
+            <Route path="/create-emp" element={<CreateEmployerProfile />} />
           </>)}
 
           {(user?.role === "job_seeker") && (<>

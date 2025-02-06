@@ -50,12 +50,12 @@ const Header = () => {
           </Link>
 
           {user?.role === "job_seeker" && (
-            <Link to="/job-seekers" className="hover:text-blue-400">
+            <Link to="/" className="hover:text-blue-400">
               Profile
             </Link>
           )}
           {user?.role === "employer" && (
-            <Link to="/profile/employer" className="hover:text-blue-400">
+            <Link to="/employers" className="hover:text-blue-400">
               Profile
             </Link>
           )}
