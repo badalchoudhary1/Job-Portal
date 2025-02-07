@@ -1,13 +1,14 @@
-
-
-
-import { getProfile, logout } from "../services/auth";
+import { getProfile } from "../services/auth";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useStore from "../store";  // Assuming you have a store for user state
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { user } = useStore();  // Fetch user data
+  const navigate = useNavigate();
 
   // Fetch user profile
   const fetchProfile = async () => {
@@ -18,18 +19,11 @@ const Profile = () => {
     } catch (err) {
       console.error("Error fetching profile:", err);
       setError("Session expired. Please login again.");
-      logout();  // Clear token if fetch fails
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    alert("Logged out successfully");
-  };
-
-  // Fetch profile when component mounts
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -43,14 +37,29 @@ const Profile = () => {
         {!loading && profile?.message ? (
           <div className="text-center">
             <p className="text-lg mb-4">{profile.message}</p>
-            <button 
-              onClick={handleLogout} 
-              className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
-              Logout
-            </button>
           </div>
         ) : (
           !loading && <p className="text-center text-red-500">{error || "Could not fetch detailed profile. Please try again later."}</p>
+        )}
+
+        {/* Conditional Profile Creation Button */}
+        {!loading && !profile?.hasProfile && (  // Check if user has no profile yet
+          <div className="mt-6 text-center">
+            {user?.role === "job_seeker" && (
+              <button 
+                onClick={() => navigate("/job-seekers/new")}
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                Create Your Job Seeker Profile
+              </button>
+            )}
+            {user?.role === "employer" && (
+              <button 
+                onClick={() => navigate("/create-emp")}
+                className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                Create Your Employer Profile
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

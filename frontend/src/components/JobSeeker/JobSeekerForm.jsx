@@ -1,9 +1,9 @@
 import React from "react";
 import { createJobSeekerProfile } from "../../api/jobSeekerApi";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required."),
@@ -12,13 +12,16 @@ const schema = z.object({
   skills: z.string().min(1, "Skills are required."),
   bio: z.string().optional(),
   location: z.string().min(1, "Location is required."),
+  
 });
 
 const JobSeekerForm = () => {
+  const navigate = useNavigate(); // Initialize the useNavigate hook
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset, // Get the reset function to clear the form
   } = useForm({
     resolver: zodResolver(schema),
   });
@@ -33,6 +36,12 @@ const JobSeekerForm = () => {
       const response = await createJobSeekerProfile(formData); // Replace with your API call
       alert("Profile created successfully!");
       console.log(response);
+
+      // Reset form fields after successful submission
+      reset();
+
+      // Redirect to /job-list page
+      navigate("/job-list");
     } catch (error) {
       console.error("Error creating profile:", error.response?.data || error.message);
       alert("Failed to create profile. Please try again.");

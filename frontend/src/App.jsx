@@ -1,11 +1,9 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import AboutUsPage from './pages/AboutUsPage';
-import ContactUsPage from './pages/ContactUsPage';
 import JobSeekerList from "./components/JobSeeker/JobSeekerList";
 import JobSeekerForm from "./components/JobSeeker/JobSeekerForm";
 import JobSeekerDetails from "./components/JobSeeker/JobSeekerDetails";
-import CompareJobsPage from "./pages/CompareJobsPage";
 import FAQPage from './pages/FAQPage';
 import BlogPage from './pages/BlogPage';
 import SuccessStoriesPage from './pages/SuccessStoriesPage';
@@ -28,12 +26,10 @@ const App = () => {
           {(user?.role === "employer" || user?.role === "job_seeker") && (
             <>
             <Route path="/about-us" element={<AboutUsPage />} />
-            <Route path="/contact-us" element={<ContactUsPage />} />
-            <Route path="/" element={<JobSeekerList />} />
+            <Route path="/job-list" element={<JobSeekerList />} />
             <Route path="/job-seekers/:id" element={<JobSeekerDetails />} />
-            <Route path="/compare-jobs" element={<CompareJobsPage />} />
             <Route path="/faq" element={<FAQPage />} />
-            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/" element={<BlogPage />} />
             <Route path="/success-stories" element={<SuccessStoriesPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/emp-profile/:id" element={<EmployerProfile/>} />

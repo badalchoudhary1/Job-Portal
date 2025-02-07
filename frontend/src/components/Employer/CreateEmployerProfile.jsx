@@ -1,56 +1,115 @@
-import { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { createEmployerProfile } from "../../api/employerApi";
+import { useNavigate } from "react-router-dom";  // Import this
+
+// Zod schema for form validation
+const schema = z.object({
+  company_name: z.string().min(1, "Company name is required."),
+  email: z.string().email("Please enter a valid email address."),
+  phone: z.string().regex(/^\d+$/, "Phone number should only contain numbers."),
+  location: z.string().optional(),
+  website: z.string().url("Please enter a valid URL."),
+});
 
 const CreateEmployerProfile = ({ token }) => {
-  const [formData, setFormData] = useState({
-    company_name: "",
-    email: "",
-    phone: "",
-    location: "",
-    website: "",
+  const navigate = useNavigate();  // Initialize navigate
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,  // Hookform reset method to clear the form fields
+  } = useForm({
+    resolver: zodResolver(schema),
   });
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setError("");
-
+  // Handle form submission
+  const onSubmit = async (data) => {
     try {
-      const response = await createEmployerProfile(token, formData);
-      setMessage("Profile created successfully!");
-      setFormData({
-        company_name: "",
-        email: "",
-        phone: "",
-        location: "",
-        website: "",
-      });
-    } catch (err) {
-      setError(err.error || "Failed to create profile");
+      await createEmployerProfile(token, data); // Remove response
+      alert("Profile created successfully!");
+      reset();  // Clear the form fields
+      navigate("/employers");  // Redirect to /employers
+    } catch (error) {
+      alert("Failed to create profile. Please try again.");
+      console.error(error.response?.data || error.message);
     }
   };
+
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mt-6">
       <h2 className="text-2xl font-semibold text-gray-700">Create Employer Profile</h2>
-      {message && <p className="text-green-500">{message}</p>}
-      {error && <p className="text-red-500">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="mt-4">
-        <input type="text" name="company_name" value={formData.company_name} onChange={handleChange} placeholder="Company Name" className="w-full p-2 border rounded-md mb-2" required />
-        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full p-2 border rounded-md mb-2" required />
-        <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" className="w-full p-2 border rounded-md mb-2" required />
-        <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Location (Optional)" className="w-full p-2 border rounded-md mb-2" />
-        <input type="url" name="website" value={formData.website} onChange={handleChange} placeholder="Website (Optional)" className="w-full p-2 border rounded-md mb-2" />
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
+        {/* Company Name */}
+        <div>
+          <input
+            type="text"
+            {...register("company_name")}
+            placeholder="Company Name"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.company_name && (
+            <p className="text-red-500 text-sm">{errors.company_name.message}</p>
+          )}
+        </div>
 
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">Create Profile</button>
+        {/* Email */}
+        <div>
+          <input
+            type="email"
+            {...register("email")}
+            placeholder="Email"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+        </div>
+
+        {/* Phone */}
+        <div>
+          <input
+            type="text"
+            {...register("phone")}
+            placeholder="Phone"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+        </div>
+
+        {/* Location */}
+        <div>
+          <input
+            type="text"
+            {...register("location")}
+            placeholder="Location (Optional)"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.location && (
+            <p className="text-red-500 text-sm">{errors.location.message}</p>
+          )}
+        </div>
+
+        {/* Website */}
+        <div>
+          <input
+            type="url"
+            {...register("website")}
+            placeholder="Website"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {errors.website && <p className="text-red-500 text-sm">{errors.website.message}</p>}
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Create Profile
+        </button>
       </form>
     </div>
   );
