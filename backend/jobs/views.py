@@ -44,18 +44,6 @@ class EmployerProfileViewSet(viewsets.ModelViewSet):
             return Employer.objects.all()
         return Employer.objects.none()
 
-    # def get_queryset(self):
-    #     """
-    #     Employers can only view their own profile.
-    #     Admin users can view all employer profiles.
-    #     """
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         if user.is_staff:
-    #             return Employer.objects.filter(user=user)
-    #         return Employer.objects.filter(user=user)
-    #     return Employer.objects.none()
-
     @action(detail=False, methods=['post'], url_path="create-emp-profile")
     def create_profile(self, request):
         """
