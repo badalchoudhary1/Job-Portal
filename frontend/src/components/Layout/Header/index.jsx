@@ -149,6 +149,16 @@ const Header = () => {
                 <li>
                   <Link to="/success-stories" className="block px-4 py-2 hover:bg-gray-100">Success Stories</Link>
                 </li>
+          {user?.role === "job_seeker" && (
+            <li>
+              <Link to="/job-seekers/new" className="block px-4 py-2 hover:bg-gray-100">Create your profile</Link>
+            </li>
+          )}
+          {user?.role === "employer" && (
+            <li>
+              <Link to="/create-emp" className="block px-4 py-2 hover:bg-gray-100">Create your profile</Link>
+            </li>
+          )}
               </ul>
             )}
           </div>

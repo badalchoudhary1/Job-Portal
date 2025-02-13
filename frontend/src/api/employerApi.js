@@ -36,8 +36,9 @@ export const createEmployerProfile = async (token, data) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : error;
-  }
+    throw  error;
+ }
+  
 };
 
 

@@ -15,6 +15,7 @@ import CreateEmployerProfile from './components/Employer/CreateEmployerProfile';
 import EmployerProfile from './components/Employer/EmployerProfile';
 import EmployerList from './components/Employer/EmployerList';
 import "./config/axios"
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   const {token, user} = useStore()
@@ -60,6 +61,7 @@ const App = () => {
 
         </>
           }
+       <ToastContainer />
       </main>
    
   );

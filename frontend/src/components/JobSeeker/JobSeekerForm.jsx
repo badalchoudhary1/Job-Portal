@@ -4,11 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits."),
+  phone: z.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits and only number."),
   skills: z.string().min(1, "Skills are required."),
   bio: z.string().optional(),
   location: z.string().min(1, "Location is required."),
@@ -28,26 +29,41 @@ const JobSeekerForm = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
+    
+    // Add text fields
     for (const key in data) {
-      formData.append(key, data[key]);
+      if (key !== "profile_picture" && key !== "resume") {
+        formData.append(key, data[key]);
+      }
     }
-
+  
+    // Add file inputs explicitly
+    const profilePictureFile = document.querySelector('input[name="profile_picture"]').files[0];
+    if (profilePictureFile) {
+      formData.append("profile_picture", profilePictureFile);
+    }
+  
+    const resumeFile = document.querySelector('input[name="resume"]').files[0];
+    if (resumeFile) {
+      formData.append("resume", resumeFile);
+    }
+  
     try {
       const response = await createJobSeekerProfile(formData); // Replace with your API call
-      alert("Profile created successfully!");
-      console.log(response);
-
+      toast.success("Profile created successfully!");
+      console.log("API Response:", response);
+  
       // Reset form fields after successful submission
       reset();
-
-      // Redirect to /job-list page
-      navigate("/job-list");
+  
+      // Redirect to /your  page
+      navigate(`/job-seekers/${response.id}`); 
     } catch (error) {
       console.error("Error creating profile:", error.response?.data || error.message);
-      alert("Failed to create profile. Please try again.");
+      toast.error(error.response.data.message)
     }
   };
-
+  
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-12 mb-12">
       <h2 className="text-2xl font-semibold text-center mb-6">Create Job Seeker Profile</h2>
@@ -83,17 +99,23 @@ const JobSeekerForm = () => {
         </div>
 
         <div>
+        <label htmlFor="resume" className="block text-gray-400 font-medium mb-2">
+          Upload your Resume </label>
           <input
             type="file"
             {...register("resume")}
+            accept=".pdf, .doc, .docx" // Restrict to document types
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           {errors.resume && <p className="text-red-500 text-sm">{errors.resume.message}</p>}
         </div>
 
         <div>
+        <label htmlFor="resume" className="block text-gray-400 font-medium mb-2">
+        Upload your Profile Picture </label>
           <input
             type="file"
+            accept="image/*" // Restrict to image types
             {...register("profile_picture")}
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
@@ -139,4 +161,3 @@ const JobSeekerForm = () => {
 };
 
 export default JobSeekerForm;
-

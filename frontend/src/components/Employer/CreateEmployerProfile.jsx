@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createEmployerProfile } from "../../api/employerApi";
 import { useNavigate } from "react-router-dom";  // Import this
+import { toast } from "react-toastify";
 
 // Zod schema for form validation
 const schema = z.object({
   company_name: z.string().min(1, "Company name is required."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z.string().regex(/^\d+$/, "Phone number should only contain numbers."),
+  phone: z.string().regex(/^\d{10,15}$/, "Phone number should be between 10 and 15 digits."),
   location: z.string().optional(),
   website: z.string().url("Please enter a valid URL."),
 });
@@ -28,13 +29,13 @@ const CreateEmployerProfile = ({ token }) => {
   // Handle form submission
   const onSubmit = async (data) => {
     try {
-      await createEmployerProfile(token, data); // Remove response
-      alert("Profile created successfully!");
+      const profileData =  await createEmployerProfile(token, data); // Remove response
       reset();  // Clear the form fields
-      navigate("/employers");  // Redirect to /employers
+      toast.success("Profile created successfully!");
+      navigate(`/emp-profile/${profileData.id}`);  // Redirect to /employers
     } catch (error) {
-      alert("Failed to create profile. Please try again.");
-      console.error(error.response?.data || error.message);
+      // alert("Failed to create profile. Please try again.");
+     toast.error(error.response.data.message)
     }
   };
 

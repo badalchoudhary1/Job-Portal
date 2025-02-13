@@ -56,6 +56,7 @@ const JobSeekerList = () => {
                   alt={seeker.name}
                   className="w-16 h-16 rounded-full mr-4"
                 />
+                {console.log("Job Seeker:", seeker)}
                 <div>
                   <h3 className="text-xl font-semibold text-gray-800">
                     <Link
