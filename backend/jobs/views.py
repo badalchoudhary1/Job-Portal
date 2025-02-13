@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
-
+from .models import CustomUser
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer
@@ -96,6 +96,9 @@ class JobSeekerViewSet(viewsets.ModelViewSet):
         """
         Handle job seeker profile creation.
         """
+        user = request.user
+        if JobSeeker.objects.filter(user=user).exists():
+            return Response({"message": "Profile already exists"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
@@ -118,6 +121,12 @@ class JobSeekerViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
+    # Check if the username already exists
+    username = request.data.get("username", "")
+    if CustomUser.objects.filter(username=username).exists():
+        return Response({
+            'message': 'A user with this username already exists. Please choose a different username.'
+        }, status=status.HTTP_400_BAD_REQUEST)
     if serializer.is_valid():
         user = serializer.save()
         token, _ = Token.objects.get_or_create(user=user)
