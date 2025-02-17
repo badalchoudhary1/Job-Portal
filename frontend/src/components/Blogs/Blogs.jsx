@@ -1,6 +1,3 @@
-
-
-
 import { useState, useEffect } from "react";
 import defaultImage from "../../assets/images/blog_default.webp";
 

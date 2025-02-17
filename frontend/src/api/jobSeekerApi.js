@@ -12,10 +12,6 @@ export const fetchJobSeekerDetails = async (id) => {
   return response.data;
 };
 
-// export const createJobSeekerProfile = async (data) => {
-//   const response = await axios.post(`${BASE_URL}create-profile/`, data);
-//   return response.data;
-// };
 export const createJobSeekerProfile = async (data) => {
   try {
     const response = await axios.post(`${BASE_URL}create-profile/`, data);
