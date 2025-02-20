@@ -51,8 +51,6 @@ class EmployerProfileViewSet(viewsets.ModelViewSet):
         Prevents duplicate profile creation for the same user.
         """
         user = request.user
-        # if Employer.objects.filter(user=user).exists():
-        #     return Response({"error": "Employer profile already exists."}, status=status.HTTP_400_BAD_REQUEST)
         if Employer .objects.filter(user=user).exists():
             return Response({"message": "Profile already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
