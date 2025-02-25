@@ -22,20 +22,12 @@ from .serializers import EmployerSerializer
 
 
 class EmployerProfileViewSet(viewsets.ModelViewSet):
-    """
-    Viewset to manage Employer profiles.
-    Employers can create, view, and update their own profile.
-    Admin users can access all employer profiles.
-    """
     queryset = Employer.objects.all()
     serializer_class = EmployerSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """
-        Employers can only view their own profile.
-        Admin users can view all employer profiles.
-        """
+        """ Return all employer profiles for authenticated users. """
         user = self.request.user
         if user.is_authenticated:
             if user.is_staff:  # Allow admins to view all profiles
@@ -62,7 +54,7 @@ class EmployerProfileViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Modify retrieve method to prevent showing irrelevant or specific useless data.
+        Modify retrieve method to prevent showing irrelevant or specific useless data   .
         """
         try:
             instance = self.get_object()  # Get the specific object
