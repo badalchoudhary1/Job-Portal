@@ -35,7 +35,7 @@ const BlogList = () => {
             <p className="text-gray-600">
               {expanded === index ? (
                 <>
-                  {blog.description.slice(0, 300)}
+                  {blog.description.slice(0,300)}
                   <button
                     onClick={() => setExpanded(null)}
                     className="text-blue-600 mt-2 block"
@@ -45,7 +45,7 @@ const BlogList = () => {
                 </>
               ) : (
                 <>
-                  {blog.description.slice(0, 300)}...
+                  {blog.description.slice(0, 50)}...
                   <button
                     onClick={() => setExpanded(index)}
                     className="text-blue-600 ml-1"
